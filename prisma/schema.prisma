@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  name      String
+  email     String   @unique
+  password  String
+  phone     String   @unique
+  role      Role     @default(TEACHER)
+  school    String?
+  status    String   @default("PENDING") @db.VarChar(20)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  TEACHER
+  ADMIN
+  SUPERADMIN
+}
+
+model EmailTemplate {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  subject   String
+  html      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
