@@ -1,4 +1,4 @@
-// app/api/auth/register/route.js
+
 
 import { authController } from "../../controllers/auth.controller";
 

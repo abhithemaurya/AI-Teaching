@@ -1,3 +1,4 @@
+import { path } from "framer-motion/client";
 import {
   LayoutDashboard,
   HelpCircle,
@@ -8,7 +9,13 @@ import {
   Settings,
   ShieldCheck,
   Mail,
+  icons,
+  AirVent,
+  Theater,
+  WandSparkles,
+  Settings2,
 } from "lucide-react";
+import { Children } from "react";
 
 
 export const sidebarLinks = [
@@ -65,17 +72,33 @@ export const sidebarLinks = [
     path: "/superadmin/config",
     icon: Settings,
     roles: ["SUPERADMIN"],
-  },
-    {
-    name: "Email",
-    path: "/superadmin/email-manager",
-    icon: Mail,
-    roles: ["SUPERADMIN"],
-  },
+    children:[
+      {
+        name : "Email Manager",
+        path: "/superadmin/email-manager",
+        icon: Mail,
+        roles: ["SUPERADMIN"]
+      },
+      {
+        name: "AI Config",
+        path: "/superadmin/config",
+        icon:  Settings2,
+        roles: ["SUPERADMIN"]
+      },
+      {
+       name: "AI Prompt",
+       "path": "/superadmin/ai-prompt",
+       icon: WandSparkles,
+       roles: ["SUPERADMIN"]
 
+      }
+    ]
 
+  },
+   
   
 ];
+
 
 
 

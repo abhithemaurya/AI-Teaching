@@ -105,10 +105,10 @@ const WorksheetsContent = () => {
 
       <div className="flex items-center gap-4 w-full md:w-auto">
         
-        <button className="flex-1 md:flex-none border border-gray-300 text-gray-800 font-bold py-3 px-8 rounded flex items-center justify-center gap-2 hover:bg-gray-100 transition">
+        {/* <button className="flex-1 md:flex-none border border-gray-300 text-gray-800 font-bold py-3 px-8 rounded flex items-center justify-center gap-2 hover:bg-gray-100 transition">
           <FileText size={18} />
           Word (.docx)
-        </button>
+        </button> */}
 
         <button
          onClick={handleDownloadPDF}

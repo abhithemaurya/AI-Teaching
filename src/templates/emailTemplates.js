@@ -17,12 +17,14 @@ export const emailTemplate = async (
 
   let html = template.html;
 
-  Object.keys(variables).forEach((item) => {
-    html = html.replaceAll(
-      `{{${item}}}`,
-      variables[item]
-    );
-  });
+   Object.keys(variables).forEach((item) => {
+  html = html.replaceAll(
+    `{{${item}}}`,
+    variables[item]
+  );
+});
+
+
 
   return {
     subject: template.subject,
@@ -162,9 +164,7 @@ export const emailTemplate = async (
 //   `;
 // };
 
-// export const 
-
-// activeAccountTemplate = (name) => {
+// export const activeAccountTemplate = (name) => {
 //     return `
 //     <div style="
 //       font-family: Arial, sans-serif;
@@ -258,3 +258,5 @@ export const emailTemplate = async (
 //     </div>
 //   `;
 // };
+
+

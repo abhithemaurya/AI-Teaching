@@ -1,23 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useConfigurationStore } from "./stores/configuration.Store";
+
 
 const MODEL_OPTIONS = {
-  openai: ["gpt-4o", "gpt-4", "gpt-3.5-turbo"],
-  anthropic: ["claude-3-opus", "claude-3-sonnet"],
-  google: ["gemini-pro", "gemini-1.5-pro"],
+  openai: [
+    "gpt-4o",
+    "gpt-4",
+    "gpt-3.5-turbo",
+  ],
+
+  anthropic: [
+    "claude-3-opus",
+    "claude-3-sonnet",
+  ],
+
+  google: [
+    "gemini-2.0-flash",
+    "gemini-1.5-pro",
+  ],
+
+  grok: [
+    "grok-2-latest",
+    "grok-beta",
+    "grok-4.20-reasoning",
+  ],
 };
 
 export default function ConfigurationForm() {
-  const [showKey, setShowKey] = useState(false);
-
+  const [showKey, setShowKey] = useState(false)
   const [form, setForm] = useState({
     provider: "openai",
     model: "",
-    prompt: "",
     apiKey: "",
   });
+
+  const {
+    configuration,
+    saveConfiguration,
+    getConfiguration,
+    loading
+  } = useConfigurationStore()
+
+  useEffect(() => {
+    getConfiguration()
+  }, [])
+
+  useEffect(() => {
+    if (configuration) {
+      setForm({
+        provider: configuration.provider ||
+          "openai",
+        model: configuration.model || "",
+
+        apiKey: configuration.apiKey || "",
+      })
+    }
+  }, [configuration])
 
   const inputClass =
     "w-full h-11 px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -26,15 +67,23 @@ export default function ConfigurationForm() {
     const { name, value } = e.target;
 
     if (name === "provider") {
-      setForm({ ...form, provider: value, model: "" });
+      setForm({
+        ...form,
+        provider: value,
+        model: ""
+      });
     } else {
-      setForm({ ...form, [name]: value });
+      setForm({
+        ...form,
+        [name]: value
+      });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log(form);
+    await saveConfiguration(form)
+    
   };
 
   return (
@@ -58,6 +107,7 @@ export default function ConfigurationForm() {
             <option value="openai">OpenAI</option>
             <option value="anthropic">Anthropic</option>
             <option value="google">Google</option>
+            <option value="grok">Grok (xAI)</option>
           </select>
         </div>
 
@@ -79,48 +129,39 @@ export default function ConfigurationForm() {
             ))}
           </select>
         </div>
-
-        <div>
-          <label className="text-sm text-gray-600">
-            Prompt
-          </label>
-          <textarea
-            name="prompt"
-            value={form.prompt}
-            onChange={handleChange}
-            placeholder="Enter system prompt..."
-            className="w-full h-24 p-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-          />
-        </div>
         <div>
           <label className="text-sm text-gray-600">
             API Key
           </label>
 
-            <div className="relative">
-        <input
-          type={showKey ? "text" : "password"}
-          name="apiKey"
-          value={form.apiKey}
-          onChange={handleChange}
-          placeholder="sk--------------------------"
-          className={inputClass}
-        />
+          <div className="relative">
+            <input
+              type={showKey ? "text" : "password"}
+              name="apiKey"
+              value={form.apiKey}
+              onChange={handleChange}
+              placeholder="sk--------------------------"
+              className={inputClass}
+            />
 
-        <button
-          type="button"
-          onClick={() => setShowKey(!showKey)}
-       className="absolute right-3 top-1/2 -translate-y-1/2 mt-[2px]"
-        >
-          {showKey ? <EyeOff size={18} /> : <Eye size={18} />}
-        </button>
-      </div>
+            <button
+              type="button"
+              onClick={() => setShowKey(!showKey)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 "
+            >
+              {showKey ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
         <button
           type="submit"
+          disabled={loading}
           className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
         >
-          Save Configuration
+          {
+            loading ? "Saving" : "Save Configuration"
+          }
+         
         </button>
       </form>
 

@@ -1,4 +1,5 @@
 import { authService } from "@/app/api/auth/services/auth.service";
+import { sendAccountCreated } from "@/features/services/email.service";
 import { varifyToken, verifyToken } from "@/lib/auth";
 import { actionAsyncStorage } from "next/dist/server/app-render/action-async-storage.external";
 
@@ -9,7 +10,7 @@ export const authController={
             const body= await req.json();
             const user= await authService.register(body);
             const {password, ...safeUser}= user
-
+             sendAccountCreated(user)
             return Response.json(
                 {    
                     success:true,     

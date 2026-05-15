@@ -65,6 +65,21 @@ export const sendActiveAccount = async (user) => {
   });
 };
 
+export const sendAccountCreated= async(user)=>{
+  const template= await emailTemplate(
+    "Account_created",
+    {
+      name: user.name,
+      login_url : `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+    }
+  );
+  await sendEmail({
+    to: user.email,
+    subject: template.subject,
+    html: template.html
+  })
+};
+
 export const sendAddTeacherNotification = async (
   user,
   password

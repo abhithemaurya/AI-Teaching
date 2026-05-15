@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 
 
-export async function PUT(req, { params }) {
+export async function PUT(req, context   ) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     const body = await req.json();
 
