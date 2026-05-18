@@ -1,12 +1,11 @@
 import { configurationValidator } from "@/validators/configurationValidator"
 import { createConfigurationService, getConfigurationService } from "../services/configuration.service";
-import { success, ZodError } from "zod";
+import { ZodError } from "zod";
 
 export const createConfigurationController =
     async (req) => {
         try {
             const body = await req.json()
-          
             const validatedData =
                 configurationValidator.parse(
                     body
@@ -40,6 +39,7 @@ export const createConfigurationController =
             )
         }
     }
+
 export const getConfigurationController = async () => {
     try {
         const result = await getConfigurationService()
@@ -48,11 +48,11 @@ export const getConfigurationController = async () => {
             data: result
         })
     } catch (error) {
-        console.log(error);
+        console.log("Get Config Error", error);
         return Response.json(
             {
                 success: false,
-                message: "Something went wrong"
+                message:error?.message || "Something went wrong"
             },
             { status: 500 }
         );

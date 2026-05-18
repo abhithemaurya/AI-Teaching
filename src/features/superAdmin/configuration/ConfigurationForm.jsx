@@ -19,13 +19,17 @@ const MODEL_OPTIONS = {
 
   google: [
     "gemini-2.0-flash",
-    "gemini-1.5-pro",
+    "gemini-1.5-pro-latest",
+    "gemini-1.5-flash",
   ],
 
   grok: [
-    "grok-2-latest",
-    "grok-beta",
-    "grok-4.20-reasoning",
+    "llama-3.3-70b-versatile",
+    "llama3-8b-8192",
+    "mixtral-8x7b-32768",
+    // "grok-2-latest",
+    // "grok-beta",
+    // "grok-4.20-reasoning",
   ],
 };
 
@@ -36,7 +40,6 @@ export default function ConfigurationForm() {
     model: "",
     apiKey: "",
   });
-
   const {
     configuration,
     saveConfiguration,
@@ -54,18 +57,15 @@ export default function ConfigurationForm() {
         provider: configuration.provider ||
           "openai",
         model: configuration.model || "",
-
         apiKey: configuration.apiKey || "",
       })
     }
   }, [configuration])
-
   const inputClass =
     "w-full h-11 px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "provider") {
       setForm({
         ...form,
@@ -79,20 +79,15 @@ export default function ConfigurationForm() {
       });
     }
   };
-
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     await saveConfiguration(form)
-    
   };
-
   return (
-    <div className="w-full     p-6 rounded-xl shadow-sm border">
-
+    <div className="w-full p-6 rounded-xl shadow-sm border">
       <h2 className="text-lg font-semibold mb-4">
         AI Configuration
       </h2>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div >
           <label className="text-sm text-gray-600">
@@ -110,7 +105,6 @@ export default function ConfigurationForm() {
             <option value="grok">Grok (xAI)</option>
           </select>
         </div>
-
         <div>
           <label className="text-sm text-gray-600">
             Model Version
@@ -133,17 +127,15 @@ export default function ConfigurationForm() {
           <label className="text-sm text-gray-600">
             API Key
           </label>
-
           <div className="relative">
             <input
               type={showKey ? "text" : "password"}
               name="apiKey"
               value={form.apiKey}
               onChange={handleChange}
-              placeholder="sk--------------------------"
+              placeholder="sk**************************"
               className={inputClass}
             />
-
             <button
               type="button"
               onClick={() => setShowKey(!showKey)}
@@ -161,10 +153,8 @@ export default function ConfigurationForm() {
           {
             loading ? "Saving" : "Save Configuration"
           }
-         
         </button>
       </form>
-
     </div>
   );
 }

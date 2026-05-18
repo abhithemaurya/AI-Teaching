@@ -82,9 +82,7 @@ const TeacherCard = ({ t, onApprove, onEdit, onDelete, onToggle, busy }) => {
             {t.createdAt ? new Date(t.createdAt).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" }) : "—"}
           </p>
         </div>
-      </div>
-
-    
+      </div>    
       <div className="flex items-center gap-2 mb-3">
         <button
           disabled={busy || isApproved}
@@ -121,7 +119,6 @@ const TeacherCard = ({ t, onApprove, onEdit, onDelete, onToggle, busy }) => {
           <Trash2 size={14} />
         </button>
       </div>
-
       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
         <span className="text-xs text-gray-500">Active account</span>
         <button
@@ -138,7 +135,6 @@ const TeacherCard = ({ t, onApprove, onEdit, onDelete, onToggle, busy }) => {
 const TeacherList = () => {
   const [openCreate, setOpenCreate] = useState(false);
   const { teacher, fetchTeachers, deleteTeacher, loading, setEditTeacher, teacherApproval, toggleTeacherStatus } = useTeacherStore();
-
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [actionLoading, setActionLoading] = useState({});
@@ -146,14 +142,14 @@ const TeacherList = () => {
   const [filterApproval, setFilterApproval] = useState("");
   const [filterActive, setFilterActive] = useState("");
 
-  useEffect(() => { fetchTeachers(); }, []);
 
+
+  useEffect(() => { fetchTeachers(); }, []);
   const clearFilters = () => {
     setSearch(""); setFilterStatus(""); setFilterApproval(""); setFilterActive("");
   };
 
   const hasActiveFilters = search || filterStatus || filterApproval || filterActive;
-
   const filteredTeachers = useMemo(() => {
     return teacher.filter((t) => {
       if (search.trim()) {
@@ -184,7 +180,6 @@ const TeacherList = () => {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-
       {deleteId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setDeleteId(null)} />

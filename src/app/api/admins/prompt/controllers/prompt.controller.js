@@ -21,7 +21,6 @@ async()=>{
         )
     }
 }  
-
 export const savePromptController=
 async(req)=>{
     try {

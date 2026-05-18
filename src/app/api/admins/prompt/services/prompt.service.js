@@ -6,14 +6,13 @@ export const getPromptsService= async()=>{
 }
 
 export const savePromptService= async(body)=>{
-    const existingPrompt= 
+    const existingPrompt=
     await promptRepositories.getByType(body.type)
     if(existingPrompt){
         return await promptRepositories.update(
             existingPrompt.id,
             body.prompt
         )
-
     }
     return await promptRepositories
     .create({

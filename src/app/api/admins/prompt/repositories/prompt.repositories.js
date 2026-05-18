@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma"
 
-
-
 export const promptRepositories =  {
    getAll:async()=>{
     return prisma.aIPrompt.findMany({

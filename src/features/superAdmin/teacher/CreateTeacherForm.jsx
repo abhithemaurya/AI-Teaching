@@ -5,9 +5,7 @@ import { Eye, EyeOff, Lock, Mail, Phone, Plus, School, User, X, ShieldOff } from
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTeacherStore } from "./stores/teacherStore";
-
 const EMPTY_FORM = { name: "", email: "", phone: "", school: "", password: "" };
-
 const InputField = ({ icon: Icon, placeholder, fieldKey, type = "text", required = false, form, onChange }) => (
   <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition bg-white">
     <Icon size={15} className="text-gray-400 flex-shrink-0" />

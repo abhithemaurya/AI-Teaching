@@ -14,60 +14,7 @@ export default function QuestionPreview() {
 
     const [tempQuestion, setTempQuestion] = useState(null);
 
-    // const [questions, setQuestions] = useState([
-    //     {
-    //         id: 1,
-    //         question: "Which process convert light into chemical energy?",
-    //         options: [
-    //             "Glycolysis",
-    //             "Photophosphorylation",
-    //             "Respiration",
-    //             "Fermentation"
-    //         ], correct: 1
-    //     },
-    //     {
-    //         id: 2,
-    //         question: "Which process convert light into chemical energy?",
-    //         options: [
-    //             "Glycolysis",
-    //             "Photophosphorylation",
-    //             "Respiration",
-    //             "Fermentation"
-    //         ], correct: 1
-    //     },
-    //     {
-    //         id: 3,
-    //         question: "Which process convert light into chemical energy?",
-    //         options: [
-    //             "Glycolysis",
-    //             "Photophosphorylation",
-    //             "Respiration",
-    //             "Fermentation"
-    //         ], correct: 1
-    //     },
-    //     {
-    //         id: 4,
-    //         question: "Which process convert light into chemical energy?",
-    //         options: [
-    //             "Glycolysis",
-    //             "Photophosphorylation",
-    //             "Respiration",
-    //             "Fermentation"
-    //         ], correct: 1
-    //     },
-    //     {
-    //         id: 5,
-    //         question: "Which process convert light into chemical energy?",
-    //         options: [
-    //             "Glycolysis",
-    //             "Photophosphorylation",
-    //             "Respiration",
-    //             "Fermentation"
-    //         ], correct: 1
-    //     },
-
-
-    // ])
+    
     const [editId, setEditId] = useState(null);
 
     const handleQuestionChange = (value) => {

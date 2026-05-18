@@ -15,7 +15,6 @@ export const useQuestionStore = create(
 
           const token = useAuthStore.getState().token;
 
-          // ✅ Bug fix: set loading false before return
           if (!token) {
             toast.error("Please login first");
             set({ loading: false });
@@ -37,7 +36,6 @@ export const useQuestionStore = create(
             throw new Error(data.message || "Failed to generate questions");
           }
 
-          // ✅ data.data is the saved DB record, .questions is the array
           set({
             questions: data.data?.questions || [],
           });
@@ -58,7 +56,6 @@ export const useQuestionStore = create(
 
           const token = useAuthStore.getState().token;
 
-          // ✅ Bug fix: set loading false before return
           if (!token) {
             toast.error("Please login first");
             set({ loading: false });
@@ -79,7 +76,6 @@ export const useQuestionStore = create(
             throw new Error(data.message || "Failed to fetch questions");
           }
 
-          // ✅ data.data is array of generation records
           set({
             questions: data.data || [],
           });

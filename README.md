@@ -156,7 +156,10 @@ src/
 
 
 
-
+1. work on config page at aiPrompt write backend 
+2. fetch with frontend 
+3. write a code for grok api 
+4.  
 
 
 

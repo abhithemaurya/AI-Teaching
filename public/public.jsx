@@ -1,188 +1,125 @@
-import OpenAI from "openai";
+import { configurationValidator }
+from "@/validators/configurationValidator";
 
-import { GoogleGenerativeAI }
-from "@google/generative-ai";
+import {
+  createConfigurationService,
+  getConfigurationService
+} from "../services/configuration.service";
 
-import { questionRepository }
-from "../repositories/question.repositories";
+import { ZodError } from "zod";
 
-export const generatedQuestionService =
-async (body, user) => {
+export const createConfigurationController =
+  async (req) => {
 
-  try {
+    try {
 
-    const {
-      topic,
-      difficulty,
-      questionType,
-      totalQuestions,
-    } = body;
+      const body =
+        await req.json();
 
-    // GET CONFIG
-    const config =
-      await questionRepository
-        .getActiveAIConfig();
-
-    if (!config) {
-      throw new Error(
-        "AI configuration not found"
-      );
-    }
-
-    // GET PROMPT
-    const promptData =
-      await questionRepository
-        .getPromptByType(
-          questionType
+      const validatedData =
+        configurationValidator.parse(
+          body
         );
-
-    if (!promptData) {
-      throw new Error(
-        `No prompt found for type: ${questionType}`
-      );
-    }
-
-    // FINAL PROMPT
-    const finalPrompt = `
-${promptData.prompt}
-
-Topic: ${topic}
-Difficulty: ${difficulty}
-Total Questions: ${totalQuestions}
-
-Return ONLY valid JSON array.
-
-Format:
-[
-  {
-    "question": "",
-    "options": [],
-    "correct": 0
-  }
-]
-`;
-
-    let aiText = "";
-
-    // =========================
-    // OPENAI
-    // =========================
-
-    if (config.provider === "openai") {
-
-      const openai =
-        new OpenAI({
-          apiKey: config.apiKey,
-        });
-
-      const completion =
-        await openai.chat.completions.create({
-          model: config.model,
-
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are an expert educational question generator.",
-            },
-            {
-              role: "user",
-              content: finalPrompt,
-            },
-          ],
-
-          temperature: 0.7,
-        });
-
-      aiText =
-        completion
-          .choices[0]
-          .message
-          .content;
-    }
-
-    // =========================
-    // GOOGLE GEMINI
-    // =========================
-
-    else if (
-      config.provider === "google"
-    ) {
-
-      const genAI =
-        new GoogleGenerativeAI(
-          config.apiKey
-        );
-
-      const model =
-        genAI.getGenerativeModel({
-          model: config.model,
-        });
 
       const result =
-        await model.generateContent(
-          finalPrompt
+        await createConfigurationService(
+          validatedData
         );
 
-      const response =
-        await result.response;
+      return Response.json({
+        success: true,
+        data: result
+      });
 
-      aiText =
-        response.text();
-    }
+    } catch (error) {
 
-    // =========================
-    // INVALID PROVIDER
-    // =========================
+      console.log(
+        "CONFIGURATION ERROR:",
+        error
+      );
 
-    else {
+      if (
+        error instanceof ZodError
+      ) {
+        return Response.json(
+          {
+            success: false,
+            errors: error.errors
+          },
+          { status: 400 }
+        );
+      }
 
-      throw new Error(
-        "Unsupported AI provider"
+      let message =
+        "Configuration failed";
+
+      // Prisma duplicate error
+      if (
+        error?.code === "P2002"
+      ) {
+        message =
+          "Configuration already exists";
+      }
+
+      // Invalid API key
+      else if (
+        error?.message
+          ?.includes("API key")
+      ) {
+        message =
+          "Invalid API key";
+      }
+
+      // Fallback
+      else if (error?.message) {
+        message =
+          error.message;
+      }
+
+      return Response.json(
+        {
+          success: false,
+          message
+        },
+        {
+          status:
+            error?.status || 500
+        }
       );
     }
+  };
 
-    // CLEAN RESPONSE
-    const cleaned =
-      aiText
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
+export const getConfigurationController =
+  async () => {
 
-    // PARSE JSON
-    const parsedQuestions =
-      JSON.parse(cleaned);
+    try {
 
-    // SAVE QUESTIONS
-    const saved =
-      await questionRepository
-        .createGeneratedQuestion({
-          teacherId: user.id,
-          topic,
-          difficulty,
-          questionType,
-          totalQuestions,
-          questions: parsedQuestions,
-        });
+      const result =
+        await getConfigurationService();
 
-    return saved;
+      return Response.json({
+        success: true,
+        data: result
+      });
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log(
-      "AI GENERATION ERROR:",
-      error
-    );
+      console.log(
+        "GET CONFIG ERROR:",
+        error
+      );
 
-    throw error;
-  }
-};
-
-export const getTeacherQuestionsService =
-async (teacherId) => {
-
-  return await questionRepository
-    .getTeacherQuestions(
-      teacherId
-    );
-};
+      return Response.json(
+        {
+          success: false,
+          message:
+            error?.message ||
+            "Failed to fetch configuration"
+        },
+        {
+          status:
+            error?.status || 500
+        }
+      );
+    }
+  };

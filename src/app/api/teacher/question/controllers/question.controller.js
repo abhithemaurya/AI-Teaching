@@ -7,102 +7,140 @@ import {
 } from "@/validators/aiValidator";
 import { generatedQuestionService, getTeacherQuestionsService } from "../services/question.service";
 
-
 export const generatedQuestionController =
-async (req) => {
-  try {
-    const user = verifyToken(req);
-    if (!user) {
+  async (req) => {
+    try {
+      const user = verifyToken(req);
+      if (!user) {
+        return Response.json(
+          {
+            success: false,
+            message: "Unauthorized",
+          },
+          { status: 401 }
+        );
+      }
+      const body = await req.json();
+      const validatedData =
+        generateQuestionValidator.parse(body);
+      const result =
+        await generatedQuestionService(
+          validatedData,
+          user
+        );
+
+      return Response.json({
+        success: true,
+        data: result,
+      });
+    }
+    catch (error) {
+
+      console.log(
+        "QUESTION GENERATED ERROR",
+        error
+      );
+
+      if (error instanceof ZodError) {
+        return Response.json(
+          {
+            success: false,
+            errors: error.errors,
+          },
+          { status: 400 }
+        );
+      }
+
+      let message =
+        "AI generation failed";
+      if (
+        error?.message?.includes(
+          "API_KEY_INVALID"
+        )
+      ) {
+        message =
+          "Invalid API key";
+      }
+
+      else if (
+        error?.message
+          ?.toLowerCase()
+          ?.includes("quota") ||
+        error?.status === 429
+      ) {
+        message =
+          "API quota exceeded. Try again later";
+      }
+      else if (
+        error?.message
+          ?.toLowerCase()
+          ?.includes("model") ||
+        error?.code ===
+        "model_not_found"
+      ) {
+        message =
+          "Selected AI model is not available";
+      }
+      else if (
+        error?.message?.includes(
+          "Incorrect API key"
+        ) ||
+        error?.message?.includes(
+          "API key not valid"
+        )
+      ) {
+        message =
+          "Invalid API key";
+      }
+
+      else if (error?.message) {
+        message = error.message;
+      }
+
       return Response.json(
         {
           success: false,
-          message: "Unauthorized",
+          message,
         },
-        { status: 401 }
-      );
-    }
-
-
-    const body = await req.json();
-
- 
-    const validatedData =
-      generateQuestionValidator.parse(body);
-
-  
-    const result =
-      await generatedQuestionService(
-        validatedData,
-        user
-      );
-
-    return Response.json({
-      success: true,
-      data: result,
-    });
-
-  } catch (error) {
-
-    console.log(error);
-
-
-    if (error instanceof ZodError) {
-      return Response.json(
         {
-          success: false,
-          errors: error.errors,
-        },
-        { status: 400 }
+          status:
+            error?.status || 500,
+        }
       );
     }
-
-    return Response.json(
-      {
-        success: false,
-        message: "Something went wrong",
-      },
-      { status: 500 }
-    );
-  }
-};
+  };
 
 export const getTeacherQuestionsController =
-async (req) => {
+  async (req) => {
+    try {
+      const user = verifyToken(req);
+      if (!user) {
+        return Response.json(
+          {
+            success: false,
+            message: "Unauthorized",
+          },
+          { status: 401 }
+        );
+      }
+      const result =
+        await getTeacherQuestionsService(
+          user.id
+        );
 
-  try {
+      return Response.json({
+        success: true,
+        data: result,
+      });
 
-    const user = verifyToken(req);
-
-    if (!user) {
+    } catch (error) {
+      console.log(error);
       return Response.json(
         {
           success: false,
-          message: "Unauthorized",
+          message: "Something went wrong",
         },
-        { status: 401 }
+        { status: 500 }
       );
     }
-
-    const result =
-      await getTeacherQuestionsService(
-        user.id
-      );
-
-    return Response.json({
-      success: true,
-      data: result,
-    });
-
-  } catch (error) {
-
-    console.log(error);
-
-    return Response.json(
-      {
-        success: false,
-        message: "Something went wrong",
-      },
-      { status: 500 }
-    );
-  }
-};
+  };

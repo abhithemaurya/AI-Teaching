@@ -54,8 +54,6 @@ export default function QuestionForm() {
             required
           />
         </div>
-
-        {/* TOTAL QUESTIONS + DIFFICULTY */}
         <div className="grid grid-cols-2 gap-6">
 
           <div>
@@ -76,7 +74,6 @@ export default function QuestionForm() {
               className="w-full border-b py-3 focus:outline-none"
             />
           </div>
-
           <div>
             <label className="text-xs font-bold uppercase text-gray-500">
               Difficulty
@@ -93,10 +90,8 @@ export default function QuestionForm() {
               <option value="Advanced">Advanced</option>
             </select>
           </div>
-
         </div>
 
-        {/* QUESTION TYPE */}
         <div>
           <p className="text-xs font-bold uppercase text-gray-500 mb-3">
             Question Type
@@ -121,7 +116,6 @@ export default function QuestionForm() {
           </div>
         </div>
 
-        {/* SUBMIT */}
         <button
           type="submit"
           disabled={loading || !formData.topic.trim()} // ✅ also disable if topic empty
