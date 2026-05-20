@@ -4,7 +4,6 @@ const promptValidator = z.object({
   type: z
     .string()
     .min(2, "Type is required"),
-
   prompt: z
     .string()
     .min(

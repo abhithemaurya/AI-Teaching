@@ -1,107 +1,267 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { toast } from "sonner";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 
 export const useQuestionStore = create(
-  persist(
-    (set, get) => ({
-      questions: [],
-      loading: false,
+  (set, get) => ({
 
-      generateQuestions: async (payload) => {
-        try {
-          set({ loading: true });
+    questions: [],
+    generatedPaperId: null,
+    loading: false,
+    paperMeta: null,
 
-          const token = useAuthStore.getState().token;
+    generateQuestions: async (payload) => {
 
-          if (!token) {
-            toast.error("Please login first");
-            set({ loading: false });
-            return;
-          }
+      try {
 
-          const response = await fetch("/api/teacher/question", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(payload),
-          });
+        set({
+          loading: true,
+        });
 
-          const data = await response.json();
+        const token =
+          useAuthStore.getState().token;
 
-          if (!response.ok) {
-            throw new Error(data.message || "Failed to generate questions");
-          }
+        if (!token) {
+
+          toast.error(
+            "Please login first"
+          );
 
           set({
-            questions: data.data?.questions || [],
+            loading: false,
           });
 
-          toast.success("Questions generated successfully");
-
-        } catch (error) {
-          console.log(error);
-          toast.error(error.message);
-        } finally {
-          set({ loading: false });
+          return;
         }
-      },
 
-      getTeacherQuestions: async () => {
-        try {
-          set({ loading: true });
+        const response =
+          await fetch(
+            "/api/teacher/question",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json",
+                Authorization:
+                  `Bearer ${token}`,
+              },
+              body: JSON.stringify(
+                payload
+              ),
+            }
+          );
 
-          const token = useAuthStore.getState().token;
+        const data =
+          await response.json();
 
-          if (!token) {
-            toast.error("Please login first");
-            set({ loading: false });
-            return;
-          }
+        if (!response.ok) {
 
-          const response = await fetch("/api/teacher/question", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.message || "Failed to fetch questions");
-          }
-
-          set({
-            questions: data.data || [],
-          });
-
-        } catch (error) {
-          console.log(error);
-          toast.error(error.message);
-        } finally {
-          set({ loading: false });
+          throw new Error(
+            data.message ||
+            "Failed to generate questions"
+          );
         }
-      },
+        set({
+          questions:
+            data.data?.questions || [],
 
-      updateQuestion: (index, updatedQuestion) => {
-        const updatedQuestions = get().questions.map((q, i) =>
-          i === index ? updatedQuestion : q
+          generatedPaperId:
+            data.data?.id,
+
+          paperMeta: {
+            topic: payload.topic,
+            difficulty:
+              payload.difficulty,
+            questionType:
+              payload.questionType,
+          },
+        });
+
+        toast.success(
+          "Questions generated successfully"
         );
-        set({ questions: updatedQuestions });
+      } catch (error) {
+
+        console.log(error);
+
+        toast.error(
+          error.message
+        );
+
+      } finally {
+
+        set({
+          loading: false,
+        });
+      }
+    },
+
+    getTeacherQuestions:
+      async () => {
+
+        try {
+
+          set({
+            loading: true,
+          });
+
+          const token =
+            useAuthStore.getState()
+              .token;
+
+          if (!token) {
+
+            toast.error(
+              "Please login first"
+            );
+
+            set({
+              loading: false,
+            });
+
+            return;
+          }
+
+          const response =
+            await fetch(
+              "/api/teacher/question",
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type":
+                    "application/json",
+
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+              }
+            );
+
+          const data =
+            await response.json();
+
+          if (!response.ok) {
+
+            throw new Error(
+              data.message ||
+              "Failed to fetch questions"
+            );
+          }
+
+          set({
+            questions:
+              data.data || [],
+          });
+
+        } catch (error) {
+
+          console.log(error);
+
+          toast.error(
+            error.message
+          );
+
+        } finally {
+
+          set({
+            loading: false,
+          });
+        }
       },
 
-      clearQuestions: () => {
-        set({ questions: [] });
-      },
-    }),
+    updateQuestion: (
+      index,
+      updatedQuestion
+    ) => {
 
-    {
-      name: "question-storage",
-    }
-  )
+      const updatedQuestions =
+        get().questions.map(
+          (q, i) =>
+            i === index
+              ? updatedQuestion
+              : q
+        );
+
+      set({
+        questions:
+          updatedQuestions,
+      });
+    },
+
+    syncQuestionsToDatabase:
+      async () => {
+
+        try {
+
+          const {
+            generatedPaperId,
+            questions,
+          } = get();
+
+          if (!generatedPaperId) {
+
+            toast.error(
+              "Paper ID not found"
+            );
+
+            return false;
+          }
+
+          const token =
+            useAuthStore.getState()
+              .token;
+
+          const response =
+            await fetch(
+              `/api/teacher/question/${generatedPaperId}`,
+              {
+                method: "PUT",
+
+                headers: {
+                  "Content-Type":
+                    "application/json",
+
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+
+                body: JSON.stringify({
+                  questions,
+                }),
+              }
+            );
+
+          const data =
+            await response.json();
+
+          if (!response.ok) {
+
+            throw new Error(
+              data.message ||
+              "Failed to sync"
+            );
+          }
+
+          return true;
+
+        } catch (error) {
+
+          console.log(error);
+
+          toast.error(
+            error.message
+          );
+
+          return false;
+        }
+      },
+
+    clearQuestions: () => {
+
+      set({
+        questions: [],
+        generatedPaperId: null,
+      });
+    },
+  })
 );

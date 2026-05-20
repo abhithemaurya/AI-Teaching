@@ -62,10 +62,8 @@ export const authService = {
             { expiresIn: "1d" } 
         )
         console.log(token ,user)
-        return {user , token}
-      
+        return {user , token}  
     },
-
     async createAdmin (data, currentUser){
       if(currentUser.role !=="SUPERADMIN"){
         throw new Error("Unauthorized: Only superAdmin can create Admin")
@@ -73,8 +71,7 @@ export const authService = {
       const {email,phone,password,name,school}=data;
       const existingEmail=await authRepository.findByEmail(email);
       if(existingEmail){
-        throw new Error("Email already exists");
-      
+        throw new Error("Email already exists");   
       }
       const existingPhone =await authRepository.findByPhone(phone);
       if(existingPhone){
@@ -85,15 +82,13 @@ export const authService = {
         email,phone,name,school,password:hashedPassword, role:"ADMIN",
       })
     },
-
     async getProfile(userId){
         const user =await authRepository.findById(userId)
         if(!user){
             throw new Error("User not found")
         }
         console.log("getProfile", user)
-        return user
-      
+        return user   
     },
     async updateProfile(userId, data){
         const {name, phone,school}= data

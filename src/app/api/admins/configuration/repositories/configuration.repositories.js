@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 
-
 export const configurationRepository={
     create:async(data)=>{
         await prisma.aIConfiguration.updateMany({

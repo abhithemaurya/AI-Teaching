@@ -1,4 +1,3 @@
-import { path } from "framer-motion/client";
 import {
   LayoutDashboard,
   HelpCircle,
@@ -9,13 +8,14 @@ import {
   Settings,
   ShieldCheck,
   Mail,
-  icons,
-  AirVent,
-  Theater,
   WandSparkles,
   Settings2,
+  Library,
+  icons,
+  FileQuestion,
+  Workflow,
+  FileHeart,
 } from "lucide-react";
-import { Children } from "react";
 
 
 export const sidebarLinks = [
@@ -23,39 +23,65 @@ export const sidebarLinks = [
     name: "Dashboard",
     path: "/teacher/dashboard",
     icon: LayoutDashboard,
-     roles: ["TEACHER"],
+    roles: ["TEACHER"],
   },
   {
     name: "Question Gen",
     path: "/teacher/questions",
     icon: HelpCircle,
-     roles: ["TEACHER"],
+    roles: ["TEACHER"],
   },
   {
     name: "Worksheets",
     path: "/teacher/worksheets",
     icon: FileText,
-     roles: ["TEACHER"],
+    roles: ["TEACHER"],
   },
   {
     name: "Lessons",
     path: "/teacher/lessons",
     icon: BookOpen,
-     roles: ["TEACHER"],
+    roles: ["TEACHER"],
   },
   {
     name: "Weekly Planner",
     path: "/teacher/weekly-planner",
     icon: CalendarDays,
-     roles: ["TEACHER"],
+    roles: ["TEACHER"],
   },
   {
-    name:"Admin Dashboard",
-    path:"/superadmin/dashboard",
+    name: "Library",
+    path: "/teacher/library",
+    icon: Library,
+    roles: ["TEACHER"],
+    children: [{
+      name: "Question",
+      path: "/teacher/question-library",
+      icon: FileQuestion,
+      roles: ["TEACHER"]
+    }, {
+      name: "Worksheets",
+      path: "/teacher/worksheet-library",
+      icon: Workflow,
+      roles: ["TEACHER"],
+
+    }, {
+      name: "Lesson",
+      path: "/teacher/lesson-library",
+      icon: FileHeart,
+      roles: ["TEACHER"]
+
+    }
+
+    ]
+  },
+  {
+    name: "Admin Dashboard",
+    path: "/superadmin/dashboard",
     icon: ShieldCheck,
     roles: ["SUPERADMIN"],
   },
-   {
+  {
     name: "Admin List",
     path: "/superadmin/admins",
     icon: Users,
@@ -72,9 +98,9 @@ export const sidebarLinks = [
     path: "/superadmin/config",
     icon: Settings,
     roles: ["SUPERADMIN"],
-    children:[
+    children: [
       {
-        name : "Email Manager",
+        name: "Email Manager",
         path: "/superadmin/email-manager",
         icon: Mail,
         roles: ["SUPERADMIN"]
@@ -82,21 +108,21 @@ export const sidebarLinks = [
       {
         name: "AI Config",
         path: "/superadmin/config",
-        icon:  Settings2,
+        icon: Settings2,
         roles: ["SUPERADMIN"]
       },
       {
-       name: "AI Prompt",
-       "path": "/superadmin/ai-prompt",
-       icon: WandSparkles,
-       roles: ["SUPERADMIN"]
+        name: "AI Prompt",
+        "path": "/superadmin/ai-prompt",
+        icon: WandSparkles,
+        roles: ["SUPERADMIN"]
 
       }
     ]
 
   },
-   
-  
+
+
 ];
 
 

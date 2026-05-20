@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { authController } from "../../controllers/auth.controller";
 
 export async function GET(req) {

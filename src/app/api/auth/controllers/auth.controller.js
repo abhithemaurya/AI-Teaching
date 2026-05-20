@@ -1,7 +1,6 @@
 import { authService } from "@/app/api/auth/services/auth.service";
 import { sendAccountCreated } from "@/features/services/email.service";
-import { varifyToken, verifyToken } from "@/lib/auth";
-import { actionAsyncStorage } from "next/dist/server/app-render/action-async-storage.external";
+import { verifyToken } from "@/lib/auth";
 
 
 export const authController={
@@ -32,8 +31,7 @@ export const authController={
     try {
         const body= await req.json();
         const {user,token }= await authService.login(body)
-        const {password, ...safeUser}= user
-        
+        const {password, ...safeUser}= user   
         return Response.json(
             {
                 success:true,
@@ -57,13 +55,9 @@ export const authController={
 async getProfile(req) {
   try {
     const decoded = verifyToken(req);
-    console.log("DECODED:", decoded);
-
     const user = await authService.getProfile(decoded.id);
     console.log("USER:", user);
-
     return Response.json(user); 
-
   } catch (error) {
     return Response.json(
       { message: error.message },
@@ -78,9 +72,7 @@ async getProfile(req) {
     const body = await req.json();
     console.log(" BODY:", body);
     const updateUser = await authService.updateProfile(userId, body);
-
     return Response.json(updateUser);
-
   } catch (error) {
     return Response.json(
       {
@@ -91,6 +83,4 @@ async getProfile(req) {
     );
   }
 }
-
-
 }

@@ -33,4 +33,27 @@ export const questionRepository = {
       },
     });
   },
+  updategeneratedQustion: async (
+    id,
+    questions
+  ) => {
+    return prisma.generatedQuestion.update({
+      where: {
+        id,
+      },
+      data: {
+        questions,
+      }
+    })
+  },
+  deleteGeneratedQuestion: async(
+    id,teacherId
+  )=>{
+    return prisma.generatedQuestion.delete({
+      where:{
+        id, teacherId
+      }
+    })
+  }
+
 };

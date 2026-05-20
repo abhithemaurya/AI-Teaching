@@ -1,6 +1,5 @@
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import { create } from "zustand";
-
 import { persist } from "zustand/middleware";
 
 export const useAdminsStore = create(
@@ -33,8 +32,6 @@ export const useAdminsStore = create(
                     set({ error: error.message, loading: false })
                 }
             },
-
-
             createAdmin: async (FormData) => {
                 try {
                     const token = useAuthStore.getState().token
@@ -48,7 +45,6 @@ export const useAdminsStore = create(
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${token}`,
                         },
-
                         body: JSON.stringify(FormData)
                     })
                     const data = await res.json()

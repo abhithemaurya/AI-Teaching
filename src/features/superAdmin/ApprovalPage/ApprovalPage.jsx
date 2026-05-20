@@ -10,7 +10,6 @@ const ApprovalPage = () => {
     }
     useEffect(()=>{
         fetchUsers();
-
     },[])
     const handleAction = async(id,action)=>{
         await fetch("api/auth",{

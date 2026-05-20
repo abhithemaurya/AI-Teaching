@@ -37,7 +37,6 @@ export default function Sidebar() {
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
                 ⬡
               </div>
-
               <div>
                 <h1 className="text-lg font-black">EduBlueprint</h1>
                 <p className="text-[10px] text-gray-500 uppercase">
@@ -46,7 +45,6 @@ export default function Sidebar() {
               </div>
             </div>
           )}
-
           <button
             onClick={toggleSidebar}
             className="p-2 rounded hover:bg-gray-200"
@@ -54,7 +52,6 @@ export default function Sidebar() {
             {isOpen ? "✕" : "☰"}
           </button>
         </div>
-
         {/* Links */}
         <nav className="flex-1 space-y-1">
           {filteredLinks.map((link, index) => {
@@ -63,7 +60,6 @@ export default function Sidebar() {
             const hasChildren = link.children?.length > 0
             return (
               <div key={link.name}>
-
                 {/* Parent Menu */}
                 {hasChildren ? (
                   <button
@@ -84,12 +80,10 @@ export default function Sidebar() {
                         }`}
                     >
                       <Icon size={18} />
-
                       {isOpen && (
                         <span>{link.name}</span>
                       )}
                     </div>
-
                     {isOpen && (
                       <span>
                         {openMenu === index

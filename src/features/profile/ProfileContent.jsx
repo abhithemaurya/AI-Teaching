@@ -17,7 +17,6 @@ import toast from "react-hot-toast";
 export default function UserProfile() {
   const { user, fetchProfile, updateProfile, loading, saving } =
     useProfileStore();
-
   const [isOpen, setIsOpen] = useState(false);
   const [form, setForm] = useState({});
 
@@ -31,7 +30,6 @@ export default function UserProfile() {
     }
   }, [user]);
   const isApproved = form?.status === "APPROVE";
-
   const handleChange = (e) => {
     setForm((prev) => ({
       ...prev,
@@ -65,12 +63,10 @@ export default function UserProfile() {
           <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
             <User className="text-blue-600" />
           </div>
-
           <div>
             <h2 className="text-xl font-bold">{form?.name}</h2>
             <p className="text-sm text-gray-500">ID: {form?.id}</p>
           </div>
-
           <div className="ml-auto flex gap-2 items-center">
             <span
               className={`px-3 py-1 text-xs font-semibold rounded-full ${
@@ -81,7 +77,6 @@ export default function UserProfile() {
             >
               {form?.status}
             </span>
-
             <button
               onClick={() => setIsOpen(true)}
               className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -99,7 +94,6 @@ export default function UserProfile() {
         </div>
         <div className="mt-6 flex justify-between border-t pt-4">
           <p className="text-xs text-gray-400">Auto saved profile data</p>
-
           {isApproved && (
             <div className="flex items-center gap-1 text-green-600 text-sm">
               <CheckCircle size={16} />
@@ -117,9 +111,7 @@ export default function UserProfile() {
             >
               <X />
             </button>
-
             <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-
             <div className="space-y-3">
               <Input
                 label="Name"
@@ -140,7 +132,6 @@ export default function UserProfile() {
                 onChange={handleChange}
               />
             </div>
-
             <button
               onClick={handleSave}
               disabled={saving}
@@ -155,7 +146,6 @@ export default function UserProfile() {
   );
 }
 
-
 function Info({ icon, label, value }) {
   return (
     <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
@@ -167,7 +157,6 @@ function Info({ icon, label, value }) {
     </div>
   );
 }
-
 function Input({ label, ...props }) {
   return (
     <div>

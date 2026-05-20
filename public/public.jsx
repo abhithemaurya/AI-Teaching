@@ -1,125 +1,39 @@
-import { configurationValidator }
-from "@/validators/configurationValidator";
+const handleDownloadPDF =
+  async (
+    showAnswers = false
+  ) => {
 
-import {
-  createConfigurationService,
-  getConfigurationService
-} from "../services/configuration.service";
+    if (!questions.length) {
 
-import { ZodError } from "zod";
-
-export const createConfigurationController =
-  async (req) => {
-
-    try {
-
-      const body =
-        await req.json();
-
-      const validatedData =
-        configurationValidator.parse(
-          body
-        );
-
-      const result =
-        await createConfigurationService(
-          validatedData
-        );
-
-      return Response.json({
-        success: true,
-        data: result
-      });
-
-    } catch (error) {
-
-      console.log(
-        "CONFIGURATION ERROR:",
-        error
+      toast.error(
+        "No questions available"
       );
 
-      if (
-        error instanceof ZodError
-      ) {
-        return Response.json(
-          {
-            success: false,
-            errors: error.errors
-          },
-          { status: 400 }
-        );
-      }
-
-      let message =
-        "Configuration failed";
-
-      // Prisma duplicate error
-      if (
-        error?.code === "P2002"
-      ) {
-        message =
-          "Configuration already exists";
-      }
-
-      // Invalid API key
-      else if (
-        error?.message
-          ?.includes("API key")
-      ) {
-        message =
-          "Invalid API key";
-      }
-
-      // Fallback
-      else if (error?.message) {
-        message =
-          error.message;
-      }
-
-      return Response.json(
-        {
-          success: false,
-          message
-        },
-        {
-          status:
-            error?.status || 500
-        }
-      );
+      return;
     }
-  };
 
-export const getConfigurationController =
-  async () => {
+    const success =
+      await syncQuestionsToDatabase();
 
-    try {
-
-      const result =
-        await getConfigurationService();
-
-      return Response.json({
-        success: true,
-        data: result
-      });
-
-    } catch (error) {
-
-      console.log(
-        "GET CONFIG ERROR:",
-        error
-      );
-
-      return Response.json(
-        {
-          success: false,
-          message:
-            error?.message ||
-            "Failed to fetch configuration"
-        },
-        {
-          status:
-            error?.status || 500
-        }
-      );
+    if (!success) {
+      return;
     }
+
+    const formattedTitle =
+      paperMeta?.topic
+        ?.split(" ")
+        ?.slice(0, 5)
+        ?.join(" ");
+
+    downloadQuestionPDF({
+
+      questions,
+
+      title:
+        `${formattedTitle || "Question"} - ${paperMeta?.difficulty || "Easy"}`,
+
+      showAnswers,
+    });
+
+    setShowDownloadModal(false);
   };

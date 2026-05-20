@@ -1,11 +1,10 @@
-import { ZodError } from "zod";
-
+import { success, ZodError } from "zod";
 import { verifyToken } from "@/lib/auth";
-
 import {
   generateQuestionValidator,
 } from "@/validators/aiValidator";
-import { generatedQuestionService, getTeacherQuestionsService } from "../services/question.service";
+import { deleteGeneratedQuestionService, generatedQuestionService, getTeacherQuestionsService, updateGeneratedQuestionService } from "../services/question.service";
+
 
 export const generatedQuestionController =
   async (req) => {
@@ -28,14 +27,12 @@ export const generatedQuestionController =
           validatedData,
           user
         );
-
       return Response.json({
         success: true,
         data: result,
       });
     }
     catch (error) {
-
       console.log(
         "QUESTION GENERATED ERROR",
         error
@@ -61,7 +58,6 @@ export const generatedQuestionController =
         message =
           "Invalid API key";
       }
-
       else if (
         error?.message
           ?.toLowerCase()
@@ -92,11 +88,9 @@ export const generatedQuestionController =
         message =
           "Invalid API key";
       }
-
       else if (error?.message) {
         message = error.message;
       }
-
       return Response.json(
         {
           success: false,
@@ -127,12 +121,10 @@ export const getTeacherQuestionsController =
         await getTeacherQuestionsService(
           user.id
         );
-
       return Response.json({
         success: true,
         data: result,
       });
-
     } catch (error) {
       console.log(error);
       return Response.json(
@@ -144,3 +136,85 @@ export const getTeacherQuestionsController =
       );
     }
   };
+export const updateGeneratedQuestionController =
+  async (req, context) => {
+
+    try {
+
+      const user =
+        verifyToken(req);
+
+      if (!user) {
+
+        return Response.json(
+          {
+            success: false,
+            message: "Unauthorized",
+          },
+          { status: 401 }
+        );
+      }
+
+      const body =
+        await req.json();
+
+      const params =
+        await context.params;
+
+      const result =
+        await updateGeneratedQuestionService(
+          Number(params.id),
+          body.questions
+        );
+
+      return Response.json({
+        success: true,
+        data: result,
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      return Response.json(
+        {
+          success: false,
+          message: "Update failed",
+        },
+        { status: 500 }
+      );
+    }
+  };
+
+export const deleteGeneratedQuestionController =
+  async (req, context) => {
+    try {
+      const user = verifyToken(req)
+      if (!user) {
+        return Response.json(
+          {
+            success: false,
+            message: "Unauthorized",
+          },
+          { status: 401 }
+        )
+      }
+      const params =
+        await context.params;
+      await deleteGeneratedQuestionService(
+        Number(params.id),
+        user.id
+      );
+      return Response.json({
+        success: true
+      })
+    } catch (error) {
+      return Response.json(
+        {
+          success: false,
+          message: "Delete failed"
+        },
+        { status: 500 }
+      )
+    }
+  }

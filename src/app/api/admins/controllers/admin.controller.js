@@ -6,11 +6,8 @@ export const adminController = {
     try {
       const currentUser = verifyToken(req);
       const body = await req.json();
-      console.log("body", body)
-
       const user = await adminService.createAdmin(body, currentUser);
       const { password, ...safeUser } = user;
-
       return Response.json(
         { success: true, data: safeUser },
         { status: 201 }

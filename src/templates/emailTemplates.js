@@ -10,22 +10,16 @@ export const emailTemplate = async (
       key,
     },
   });
-
   if (!template) {
     throw new Error("Email template not found");
   }
-
   let html = template.html;
-
-   Object.keys(variables).forEach((item) => {
-  html = html.replaceAll(
-    `{{${item}}}`,
-    variables[item]
-  );
-});
-
-
-
+  Object.keys(variables).forEach((item) => {
+    html = html.replaceAll(
+      `{{${item}}}`,
+      variables[item]
+    );
+  });
   return {
     subject: template.subject,
     html,

@@ -20,11 +20,9 @@ export const authRepository ={
    return prisma.user.findUnique({
     where:{phone},
    })
-
   },
   findByEmailOrPhone: async(identifier)=>{
     console.log("Search for: ",identifier)
-
     const user= await prisma.user.findFirst({
       where:{
         OR: [{email: identifier}, {phone:identifier}],
@@ -51,13 +49,13 @@ export const authRepository ={
     })
   },
 findById: async (id) => {
-  console.log("🔍 FIND USER ID:", id);
+  console.log("FIND USER ID:", id);
 
   const user = await prisma.user.findUnique({
     where: { id: Number(id) },
   });
 
-  console.log("👤 DB RESULT:", user);
+  console.log("DB RESULT:", user);
 
   return user;
 },

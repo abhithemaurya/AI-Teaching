@@ -9,7 +9,6 @@ export const teacherService={
     throw new Error("Unauthorized: Only super admin can create Teacher");
   }
   const { name, email, phone, school, password } = data;
-
   const existingEmail = await teacherRepository.findByEmail(email);
   if (existingEmail) {
     throw new Error("Email already exists");
@@ -28,8 +27,6 @@ export const teacherService={
     password: hashedPassword,
     role: "TEACHER",
   });
-
-
   sendAddTeacherNotification(teacher, plainPassword).catch((err) =>
     console.log("Email Error:", err)
   );
@@ -42,7 +39,6 @@ export const teacherService={
         const teacher= await teacherRepository.findById(id);
         if(!teacher){
             throw new Error("Teacher not found")
-            return teacher
         }
     },
     async update(id,data){

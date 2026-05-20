@@ -35,7 +35,6 @@ export const adminService={
     if (data.password) {
         data.password = await bcrypt.hash(data.password, 10);
     }
-
     return await adminRepository.updateAdmin(id, data);
 },
     async delete(id){

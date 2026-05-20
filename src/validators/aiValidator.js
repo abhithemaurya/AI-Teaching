@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const generateQuestionValidator =
 z.object({
-
   topic: z
     .string({
       required_error:
@@ -12,18 +11,15 @@ z.object({
       2,
       "Topic must be at least 2 characters"
     ),
-
   difficulty: z.enum([
     "Beginner",
     "Intermediate",
     "Advanced",
   ]),
-
   questionType: z.enum([
     "Multiple Choice",
     "True/False",
   ]),
-
   totalQuestions: z.coerce
     .number({
       required_error:

@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma"
 export const teacherRepository={
     createTeacher: async(data)=>{
         return prisma.user.create({data});
-
     },
     findByEmail:async (email)=>{
         return prisma.user.findUnique({
@@ -47,5 +46,4 @@ export const teacherRepository={
             where:{id:Number(id)},
         });
     },
-
 }

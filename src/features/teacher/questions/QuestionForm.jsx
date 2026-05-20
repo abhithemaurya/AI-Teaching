@@ -2,15 +2,10 @@ import { SlidersHorizontal, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useQuestionStore } from "./stores/questionStore";
 
-const questionTypes = [
-  "Multiple Choice",
-  "True/False",
-];
+const questionTypes = ["Multiple Choice", "True/False"];
 
 export default function QuestionForm() {
-
   const { generateQuestions, loading } = useQuestionStore();
-
   const [formData, setFormData] = useState({
     topic: "",
     difficulty: "Beginner",
@@ -30,15 +25,11 @@ export default function QuestionForm() {
 
   return (
     <section className="lg:col-span-5 bg-white p-8 rounded-xl space-y-8 shadow-sm">
-
       <div className="flex items-center gap-3 text-blue-600">
         <SlidersHorizontal size={20} />
         <h2 className="font-bold text-lg">Configuration</h2>
       </div>
-
       <form onSubmit={handleGenerate} className="space-y-6">
-
-        {/* TOPIC */}
         <div>
           <label className="text-xs font-bold uppercase text-gray-500">
             Topic
@@ -55,7 +46,6 @@ export default function QuestionForm() {
           />
         </div>
         <div className="grid grid-cols-2 gap-6">
-
           <div>
             <label className="text-xs font-bold uppercase text-gray-500">
               Total Questions
@@ -68,7 +58,7 @@ export default function QuestionForm() {
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  totalQuestions: Number(e.target.value), // ✅ fix: store as number
+                  totalQuestions: Number(e.target.value),
                 }))
               }
               className="w-full border-b py-3 focus:outline-none"
@@ -91,7 +81,6 @@ export default function QuestionForm() {
             </select>
           </div>
         </div>
-
         <div>
           <p className="text-xs font-bold uppercase text-gray-500 mb-3">
             Question Type
@@ -115,22 +104,18 @@ export default function QuestionForm() {
             ))}
           </div>
         </div>
-
         <button
           type="submit"
-          disabled={loading || !formData.topic.trim()} // ✅ also disable if topic empty
+          disabled={loading || !formData.topic.trim()}
           className="w-full bg-blue-600 text-white py-4 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 disabled:opacity-50"
         >
           <Sparkles size={18} />
           {loading ? "Generating..." : "Generate Questions"}
         </button>
-
       </form>
-
       <p className="text-xs text-blue-600 pt-4 border-t">
         AI will prioritize Blooms Taxonomy in its generation logic.
       </p>
-
     </section>
   );
 }

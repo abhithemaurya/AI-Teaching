@@ -7,7 +7,6 @@ import { useAdminsStore } from "./stores/adminStore";
 const AdminList = () => {
   const { admins, fetchAdmins, deleteAdmin, loading, setEditAdmin } =
     useAdminsStore();
-
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState(null);
 

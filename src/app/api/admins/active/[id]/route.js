@@ -5,9 +5,7 @@ import { NextResponse } from "next/server";
 export async function PATCH(  req, context ) {
   try {
     const { id } =await context.params;
-
     const body = await req.json();
-
     const updatedTeacher = await prisma.user.update({
       where: {
         id: Number(id),
@@ -32,7 +30,6 @@ export async function PATCH(  req, context ) {
 
   } catch (error) {
     console.log(error);
-
     return NextResponse.json(
       {
         success: false,

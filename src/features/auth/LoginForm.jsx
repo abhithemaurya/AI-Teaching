@@ -31,9 +31,7 @@ const LoginForm = () => {
       } else if (role === "SUPERADMIN") {
         router.push("/superadmin/dashboard")
       }
-
     } catch (error) {
-
       console.log(error)
       return toast.error(error.message || "login failed")
     }

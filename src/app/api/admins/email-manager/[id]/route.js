@@ -6,9 +6,7 @@ import { NextResponse } from "next/server";
 export async function PUT(req, context   ) {
   try {
     const { id } = await context.params;
-
     const body = await req.json();
-
     const updatedTemplate = await prisma.emailTemplate.update({
       where: {
         id: Number(id),

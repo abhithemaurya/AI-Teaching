@@ -4,7 +4,6 @@ import { promptRepositories } from "../repositories/prompt.repositories"
 export const getPromptsService= async()=>{
     return await promptRepositories.getAll()
 }
-
 export const savePromptService= async(body)=>{
     const existingPrompt=
     await promptRepositories.getByType(body.type)

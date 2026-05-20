@@ -12,11 +12,9 @@ const AdminsContent = () => {
         <div className="lg:col-span-1">
           <CreateAdminForm />
         </div>
-
         <div className="lg:col-span-3">
           <AdminList />
         </div>
-
       </div>
     </div>
   );

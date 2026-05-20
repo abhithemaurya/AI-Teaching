@@ -11,7 +11,6 @@ export const adminRepository = {
     });
   },
 
-
   findByPhone: async (phone) => {
     if (!phone) return null;
     return prisma.user.findUnique({
@@ -28,14 +27,12 @@ export const adminRepository = {
     return user;
   },
 
-
   findAll: async () => {
     return prisma.user.findMany({
       where: { role: "ADMIN" },
       orderBy: { createdAt: "desc" },
     });
   },
-
 
   findById: async (id) => {
     return prisma.user.findUnique({
@@ -51,7 +48,7 @@ export const adminRepository = {
   },
 
   deleteAdmin: async (id) => {
-    console.log("deleteAdmin", id )
+    console.log("deleteAdmin", id)
     return prisma.user.delete({
       where: { id: Number(id) },
     });

@@ -62,8 +62,6 @@ const CreateAdminForm = () => {
     })
   }
 
-
-
   if (user?.role !== "SUPERADMIN") {
     return (
       <div className="p-10 text-center text-red-500 font-semibold">
@@ -71,7 +69,6 @@ const CreateAdminForm = () => {
       </div>
     );
   }
-
   return (
     <div className="bg-white px-4 py-3 rounded-2xl shadow-md h-fit max-w-sm w-full mx-auto border border-gray-100">
       <div className="flex items-center gap-2 mb-5 text-blue-600">
@@ -85,8 +82,6 @@ const CreateAdminForm = () => {
           { icon: User, placeholder: "Admin Name", key: "name", type: "text", required: true },
           { icon: Mail, placeholder: "Email Address", key: "email", type: "email", required: true },
           { icon: Phone, placeholder: "Phone (optional)", key: "phone", type: "text" },
-          // { icon: School, placeholder: "School Name", key: "school", type: "text", required: true },
-          // { icon: Lock, placeholder: "Password", key: "password", type: "password", required: true },
 
         ].map(({ icon: Icon, placeholder, key, type, required }) => (
           <div
@@ -118,8 +113,6 @@ const CreateAdminForm = () => {
             className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-400 pr-6"
             value={form.password || ""}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            
-
           />
           <button
             type="button"
@@ -141,7 +134,6 @@ const CreateAdminForm = () => {
             Cancel
             </button>
           )}
-
         </div>
         <button
           type="submit"

@@ -9,7 +9,6 @@ export async function GET() {
         createdAt: "desc",
       },
     });
-
     return NextResponse.json(templates);
   } catch (error) {
     return NextResponse.json(

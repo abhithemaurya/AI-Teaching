@@ -1,13 +1,9 @@
 
 import { approveUser, getPendingUsers, rejectUser } from "../../auth/controllers/userApproval.controller";
 
-
-
 export async function GET() {
     return getPendingUsers()
-
 }
-
 export async function PUT(req) {
     const {action, userId}= await req.json()
     if(action=== "APPROVE"){

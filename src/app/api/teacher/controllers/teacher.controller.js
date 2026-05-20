@@ -6,20 +6,17 @@ export const teacherController={
         try {
             const currentTeacher= verifyToken(req)
             const body = await req.json()
-
             const teacher= await teacherService.createTeacher(body, currentTeacher)
             const {password, ...safeUser}=teacher
             return Response.json(
                 {success:true, data:safeUser},
                 {status:201}
             )
-
         } catch (error) {
             return Response.json(
                 {success:false, message:error.message},
                 {status:403}
-            );
-            
+            );      
         }
     },
     async getAll(req){
@@ -84,7 +81,7 @@ export const teacherController={
             await teacherService.delete(id)
             return Response.json({
                 success:true,
-                message:"Admin deleted"
+                message:"Admin deleted successfully"
             })
         } catch (error) {
             return Response.json(
