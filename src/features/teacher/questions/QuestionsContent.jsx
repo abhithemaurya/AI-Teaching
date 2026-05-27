@@ -14,7 +14,7 @@ const questionTypes = [
 export default function QuestionsContent() {
   const [selectedType, setSelectedType] = useState("Multiple Choice");
   return (
-    <main className="flex-grow ">
+    <main className="flex-grow">
       <div className="max-w-7xl mx-auto">
         <header className="mb-12">
           <h1 className="text-4xl font-extrabold tracking-tight mb-2">

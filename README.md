@@ -1,7 +1,8 @@
 
+ 
+
 
 follow RSC 
-
 Request → Route → Controller → Service → Repository → DB
 
 
@@ -168,200 +169,6 @@ src/
 
 
 
-teacherLIst code before add status 
-"use client";
-
-import { Pencil, Search, Trash2 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
-import { useTeacherStore } from "./stores/teacherStore";
-
-
-const TeacherList = () => {
-  const { teacher,fetchTeachers,updateTeacher , deleteTeacher, loading, setEditTeacher } =useTeacherStore()
-
-  const [search, setSearch] = useState("");
-  const [deleteId, setDeleteId] = useState(null);
-
-  useEffect(() => {
-    fetchTeachers();
-  }, []);
-
-  
-  const filteredTeacher = useMemo(() => {
-    if (!search.trim()) return teacher;
-
-    const s = search.toLowerCase();
-
-    return teacher.filter(
-      (a) =>
-        a.name?.toLowerCase().includes(s) ||
-        a.email?.toLowerCase().includes(s) ||
-        a.phone?.includes(s)
-    );
-  }, [teacher, search]);
-
-  // 🗑 delete
-  const confirmDelete = async () => {
-    if (!deleteId) return;
-    await deleteTeacher(deleteId);
-    setDeleteId(null);
-  };
-
-  return (
-    <div className="bg-white px-4 py-3 rounded-2xl shadow-md border border-gray-100 relative">
-      {deleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setDeleteId(null)}
-          />
-
-          <div className="relative bg-white w-full max-w-sm rounded-2xl shadow-lg p-5 border border-gray-100">
-            <h3 className="text-base font-semibold text-gray-800 mb-2">
-              Delete Teacher
-            </h3>
-
-            <p className="text-sm text-gray-500 mb-5">
-              This action cannot be undone.
-            </p>
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setDeleteId(null)}
-                className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={confirmDelete}
-                className="px-3 py-1.5 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
-        <h2 className="font-semibold text-base tracking-tight">
-          Teacher List
-        </h2>
-
-        <div className="flex items-center gap-2 w-full md:w-64 border border-gray-200 rounded-lg px-2.5 py-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
-          <Search size={16} className="text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by name, email, phone..."
-            className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-400"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-      </div>
-      <div className="overflow-y-auto max-h-[500px] border border-gray-200 rounded-lg">
-        <table className="w-full text-sm table-fixed">
-          <thead className="bg-gray-50 sticky top-0 z-10">
-            <tr className="text-left text-gray-500">
-              <th className="px-3 py-2 w-[60px]">ID</th>
-              <th className="px-3 py-2 w-[140px]">Name</th>
-              <th className="px-3 py-2 w-[160px]" >Contact</th>
-              <th className="px-3 py-2 w-[120px]">Role</th>
-               <th className="px-3 py-2 w-[120px]">School</th>
-              <th className="px-3 py-2 w-[120px]">Created</th>
-              {/* <th className="px-3 py-2 w-[120px]">Status</th> */}
-              <th className="px-3 py-2 text-center w-[80px]">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="6" className="text-center py-6 text-gray-400">
-                  Loading...
-                </td>
-              </tr>
-            ) : filteredTeacher.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="text-center py-6 text-gray-400">
-                  No teacher found
-                </td>
-              </tr>
-            ) : (
-              filteredTeacher.map((teacher) => (
-                <tr
-                  key={teacher.id}
-                  className="border-t border-gray-100 hover:bg-gray-50 transition"
-                >
-                  <td className="px-3 py-2 text-gray-500">
-                    {teacher.id}
-                  </td>
-
-                  <td className="px-3 py-2 font-medium text-gray-800 truncate">
-                    {teacher.name}
-                  </td>              
-                  <td className="px-3 py-2">
-                    <div className="flex flex-col">
-                      <span className="text-gray-700 truncate">
-                        {teacher.email}
-                      </span>
-                      <span className="text-gray-400 text-xs">
-                        {teacher.phone || "-"}
-                      </span>
-                    </div>
-                  </td> 
-                              
-                  <td className="px-3 py-2">
-                    <span className="px-2 py-0.5 text-xs rounded-md bg-blue-50 text-blue-600">
-                      {teacher.role}
-                    </span>
-                  </td>
-                     <td className="px-3 py-2">
-                    <div className="flex flex-col">
-                      <span className="text-gray-700">
-                        {teacher.school}
-                      </span>
-                    </div>
-                  </td> 
-                  <td className="px-3 py-2 text-gray-400 text-xs">
-                    {teacher.createdAt
-                      ? new Date(teacher.createdAt).toLocaleDateString()
-                      : "-"}
-                  </td>
-                  <td className="px-3 py-2 text-center">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        onClick={() => setEditTeacher(teacher)}
-                        className="text-blue-600 hover:bg-blue-50 p-1.5 rounded-md"
-                      >
-                        <Pencil size={15} />
-                      </button>
-                      <button
-                        onClick={() => setDeleteId(teacher.id)}
-                        className="text-red-500 hover:bg-red-50 p-1.5 rounded-md"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-export default TeacherList;
-
-
-
-
-
-
 
 
 
@@ -391,3 +198,39 @@ export default TeacherList;
 3. allow all route to access role module
 
 
+
+
+
+1. work on question librery page UI 
+2. add a function only clicking on save to librery then data will save in librery 
+3. when teacher will download pdf then automatically qus will same in librery 
+4. add a toggle button for allow download pdf also and deactive it.
+
+
+
+
+
+
+26-05-2026
+1. add function if teacher is rejecter by superadmin then can again teacher can retry with same nmber or email
+2. status and approval section fixed in single row and it will show according to the condition.
+3. work on filter and search function
+
+
+
+
+trash
+some change in question librery
+ 
+
+1. fix sidebar for chile dropdown on full screen view
+2. add new table in Db 
+3. add 2 more option in question generater for genearting a question 
+   by adding a class and question type 
+4. buile a function for add multipe select for question type.
+5. fix question libery UI 
+
+
+
+
+change a prompt generater page UI

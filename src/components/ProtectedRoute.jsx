@@ -33,7 +33,9 @@ export default function ProtectedRoute({
         ?.toString()
         .trim()
         .toUpperCase();
-
+   console.log("USER:", user);
+   console.log("ROLE:", role);
+   console.log("ALLOWED:", allowedRoles);
     if (
       allowedRoles.length > 0 &&
       !allowedRoles.includes(role)

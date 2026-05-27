@@ -41,8 +41,7 @@ const cards = [
 export default function DashboardContent() {
      const router = useRouter();
   return (
-    <div  className="flex-grow ">
-      
+    <div  className="flex-grow ">  
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
         {cards.map((card, i) => {
           const Icon = card.icon;
@@ -59,11 +58,9 @@ export default function DashboardContent() {
               <h3 className="text-base md:text-lg font-bold mb-1 md:mb-2">
                 {card.title}
               </h3>
-
               <p className="text-xs md:text-sm text-gray-500 mb-4 md:mb-6 flex-1">
                 {card.desc}
               </p>
-
               <button className="flex items-center justify-center gap-2 text-sm bg-blue-100 hover:bg-blue-600 hover:text-white text-blue-600 py-2 rounded transition">
                 Start <ArrowRight size={14} className="md:hidden" />
                 <ArrowRight size={16} className="hidden md:block" />
@@ -72,7 +69,6 @@ export default function DashboardContent() {
           );
         })}
       </div>
-
       <div className="w-full">
         <DashboardAnalyticsActivity />
       </div>

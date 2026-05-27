@@ -1,25 +1,46 @@
 import { SlidersHorizontal, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useQuestionStore } from "./stores/questionStore";
+import { toast } from "sonner";
 
-const questionTypes = ["Multiple Choice", "True/False"];
 
+const questionTypes = ["Multiple Choice", "True/False", "Subjective", "multiple-response"  ];
+const classOptions = [
+  "Class 1",
+  "Class 2",
+  "Class 3",
+  "Class 4",
+  "Class 5",
+  "Class 6",
+  "Class 7",
+  "Class 8",
+  "Class 9",
+  "Class 10",
+  "Class 11",
+  "Class 12",
+];
 export default function QuestionForm() {
   const { generateQuestions, loading } = useQuestionStore();
   const [formData, setFormData] = useState({
     topic: "",
     difficulty: "Beginner",
-    questionType: "Multiple Choice",
-    totalQuestions: 10,
+    questionType: [],
+    totalQuestions:1,
+    studentClass: "Class 1",
   });
 
   const handleGenerate = async (e) => {
     e.preventDefault();
+      if(formData.questionType.length===0){
+       return  toast.error("Please select at least one question type")
+      }
+      
     await generateQuestions({
       topic: formData.topic,
       difficulty: formData.difficulty,
       questionType: formData.questionType,
       totalQuestions: Number(formData.totalQuestions),
+      studentClass: formData.studentClass,
     });
   };
 
@@ -80,6 +101,23 @@ export default function QuestionForm() {
               <option value="Advanced">Advanced</option>
             </select>
           </div>
+          <div>
+         <label htmlFor="" className="text-xs font-bold uppercase text-gray-500">Class</label>
+         <select name="" id=""
+         value={formData.studentClass}
+         onChange={(e)=>setFormData((prev)=>({
+          ...prev, 
+          studentClass: e.target.value
+         }))}
+         className="w-full border-b py-3 focus:outline-none"
+         >
+         {classOptions.map((cls)=>(
+          <option key={cls} value={cls}>
+            {cls}
+          </option>
+         ))}
+         </select>
+          </div>
         </div>
         <div>
           <p className="text-xs font-bold uppercase text-gray-500 mb-3">
@@ -91,10 +129,15 @@ export default function QuestionForm() {
                 key={type}
                 type="button"
                 onClick={() =>
-                  setFormData((prev) => ({ ...prev, questionType: type }))
+                  setFormData((prev) => ({
+                     ...prev,
+                     questionType: prev.questionType.includes(type)
+                     ? prev.questionType.filter((item)=>item !==type)
+                     : [...prev.questionType, type]
+                    }))
                 }
                 className={`px-4 py-2 rounded-full text-sm transition ${
-                  formData.questionType === type
+                  formData.questionType.includes(type)
                     ? "bg-blue-100 text-[#52616a]"
                     : "bg-gray-100 hover:bg-blue-100"
                 }`}

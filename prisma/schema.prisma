@@ -1,6 +1,4 @@
- 
- 
- generator client {
+generator client {
   provider = "prisma-client-js"
 }
 
@@ -12,14 +10,14 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
 
-  name      String
-  email     String   @unique
-  password  String
-  phone     String   @unique
-  role      Role     @default(TEACHER)
-  school    String?
-  status    String   @default("PENDING") @db.VarChar(20)
-  isActive  Boolean  @default(true)
+  name     String
+  email    String  @unique
+  password String
+  phone    String  @unique
+  role     Role    @default(TEACHER)
+  school   String?
+  status   String  @default("PENDING") @db.VarChar(20)
+  isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -35,10 +33,10 @@ enum Role {
 }
 
 model EmailTemplate {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique
-  subject   String
-  html      String   @db.Text
+  id      Int    @id @default(autoincrement())
+  key     String @unique
+  subject String
+  html    String @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -49,7 +47,7 @@ model AIConfiguration {
 
   provider String
   model    String
-  apiKey   String   @db.Text
+  apiKey   String @db.Text
 
   isActive Boolean @default(true)
 
@@ -62,7 +60,7 @@ model AIPrompt {
 
   title       String
   type        String
-  prompt      String   @db.Text
+  prompt      String  @db.Text
   description String?
 
   isActive Boolean @default(true)
@@ -80,23 +78,13 @@ model GeneratedQuestion {
 
   topic           String
   difficulty      String
-  questionType    String
+  questionType    String[]
   totalQuestions  Int
-
-  // GENERATED AI QUESTIONS
-  questions Json
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status          String   @default("DRAFT")
+  questions       Json
+  studentClass    String?
+  downloadCount   Int      @default(0)
+  downloadEnabled Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
-
-
-
-
-
-
-
-
-
-
-

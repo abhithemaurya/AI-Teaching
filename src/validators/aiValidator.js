@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 export const generateQuestionValidator =
@@ -11,15 +12,26 @@ z.object({
       2,
       "Topic must be at least 2 characters"
     ),
+
   difficulty: z.enum([
     "Beginner",
     "Intermediate",
     "Advanced",
   ]),
-  questionType: z.enum([
+
+  questionType:z.array(
+  z.enum([
     "Multiple Choice",
     "True/False",
-  ]),
+    "Subjective",
+    "multiple-response",
+  ])),
+
+  studentClass: z.string({
+    required_error:
+      "Student class is required",
+  }),
+
   totalQuestions: z.coerce
     .number({
       required_error:
@@ -33,5 +45,7 @@ z.object({
       150,
       "Maximum 150 questions allowed"
     ),
-
 });
+
+
+

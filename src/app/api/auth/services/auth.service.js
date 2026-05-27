@@ -1,32 +1,63 @@
 import bcrypt from "bcryptjs";
 import { authRepository } from "@/app/api/auth/repositories/auth.repositories";
-import jwt  from "jsonwebtoken";
+import jwt  from "jsonwebtoken";    
 const JWT_SECRET = process.env.JWT_SECRET; 
 
 
 export const authService = {
-    async register(data) {
-        const { email, phone, password, name, school, role } = data
-        const existingEmail = await authRepository.findByEmail(email);
-        if (existingEmail) {
-            throw new Error("Email already exists");
-        }
-        const existingPhone = await authRepository.findByPhone(phone);
-        if (existingPhone) {
-            throw new Error("Phone already exists");
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        let status="APPROVE";
-        if(role==="TEACHER"){
-            status="PENDING"
-        }
-        const user = await authRepository.createUser({
-            email, phone, name, school, password: hashedPassword,
-            role,
-            status,
-        })
-        return user;
-    },
+   async register(data){
+     const {email, phone, password, name, school, role}= data 
+    const existingEmail= await authRepository.findByEmail(email);
+    const existingPhone = await authRepository.findByPhone(phone)
+    if(existingEmail &&  existingEmail.status !== "REJECT"){
+     throw new Error("Email alredy exists")   
+    }
+    if(existingPhone && existingPhone.status !== "REJECT"){
+        throw new Error("Phone already exists")
+    }
+    const hashedPassword =await bcrypt.hash(password,10);
+    let status= "APPROVE"
+    if(role ==="TEACHER"){
+        status = "PENDING"
+    }
+    if(existingEmail && existingEmail.status === "REJECT"){
+        const updateUser= await authRepository.updateUser(
+            existingEmail.id,
+            {
+                email,phone, name,school, password:hashedPassword, role, status: "PENDING"
+            }
+        )
+        return updateUser
+    }
+    const user = await authRepository.createUser({
+        email,phone, name, school, password: hashedPassword, role, status
+    })
+    return user
+   }
+
+,
+    //  async register(data) {
+    //     const { email, phone, password, name, school, role } = data
+    //     const existingEmail = await authRepository.findByEmail(email);
+    //     if (existingEmail) {
+    //         throw new Error("Email already exists");
+    //     }
+    //     const existingPhone = await authRepository.findByPhone(phone);
+    //     if (existingPhone) {
+    //         throw new Error("Phone already exists");
+    //     }
+    //     const hashedPassword = await bcrypt.hash(password, 10);
+    //     let status="APPROVE";
+    //     if(role==="TEACHER"){
+    //         status="PENDING"
+    //     }
+    //     const user = await authRepository.createUser({
+    //         email, phone, name, school, password: hashedPassword,
+    //         role,
+    //         status,
+    //     })
+    //     return user;
+    // },
 
     async login(data) {
         let { identifier, email, phone, password } = data

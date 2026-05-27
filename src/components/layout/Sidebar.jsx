@@ -113,13 +113,13 @@ export default function Sidebar() {
                 {/* Children */}
                 {hasChildren &&
                   openMenu === index && (
-                    <div className="ml-4 mt-1 space-y-1">
-
-                      {link.children.map(
-                        (child) => {
-                          const ChildIcon =
-                            child.icon;
-
+                    <div className={`mt-1 space-y-1 ${
+                      isOpen ? "ml-4"
+                      :" flex flex-col items-center"
+                    }`}>
+                      
+                      {link.children.map((child) => {
+                          const ChildIcon = child.icon; 
                           const childActive =
                             pathname ===
                             child.path;
@@ -130,12 +130,14 @@ export default function Sidebar() {
                               href={child.path}
                             >
                               <div
-                                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${childActive
-                                    ? "bg-blue-100 text-blue-600 font-semibold"
-                                    : "text-gray-600"
-                                  }`}
+                                className={`flex items-center ${ isOpen ? "gap px-3" : "justify-center" }
+                                py-2 rounded-lg text-sm ${
+                                  childActive ? "bg-blue-100 text-blue-600 font-semibold"
+                                  : "text-gray-600"
+                                }
+                                `}
                               >
-                                <ChildIcon size={16} />
+                                <ChildIcon size={isOpen ? 16 : 22} />
 
                                 {isOpen && (
                                   <span>

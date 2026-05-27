@@ -1,137 +1,166 @@
 import jsPDF from "jspdf";
 
-export const downloadQuestionPDF =
-  ({
-    questions = [],
-    title = "Question Paper",
-    fileName,
-  }) => {
+export const downloadQuestionPDF = ({
+  questions = [],
+  title = "Question Paper",
+  fileName,
+  showAnswers = false,
+}) => {
+  if (!questions.length) {
+    return;
+  }
 
-    if (!questions.length) {
-      return;
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.setFont(undefined, "bold");
+
+  const titleY = 15;
+
+  doc.text(title, 105, titleY, {
+    align: "center",
+  });
+
+  const lineY = titleY + 5;
+
+  doc.setLineWidth(0.5);
+
+  doc.line(10, lineY, 200, lineY);
+
+  let y = lineY + 10;
+
+  // GROUP QUESTIONS BY SECTION
+  const groupedQuestions = questions.reduce((acc, question) => {
+    const section = question.section || "Other";
+
+    if (!acc[section]) {
+      acc[section] = [];
     }
 
-    const doc = new jsPDF();
+    acc[section].push(question);
 
-    doc.setFontSize(18);
+    return acc;
+  }, {});
 
-    doc.setFont(
-      undefined,
-      "bold"
-    );
-
-    const titleY = 15;
-
-    doc.text(
-      title,
-      105,
-      titleY,
-      {
-        align: "center",
+  // LOOP THROUGH SECTIONS
+  Object.entries(groupedQuestions).forEach(
+    ([sectionName, sectionQuestions]) => {
+      
+      // PAGE BREAK
+      if (y > 250) {
+        doc.addPage();
+        y = 20;
       }
-    );
 
-    const lineY =
-      titleY + 5;
+      // SECTION TITLE
+      doc.setFontSize(15);
+      doc.setFont(undefined, "bold");
 
-    doc.setLineWidth(0.5);
+      doc.text(sectionName, 10, y);
 
-    doc.line(
-      10,
-      lineY,
-      200,
-      lineY
-    );
+      y += 8;
 
-    let y = lineY + 10;
-
-    questions.forEach(
-      (q, index) => {
+      sectionQuestions.forEach((q, index) => {
 
         if (y > 270) {
-
           doc.addPage();
-
-          y = 25;
+          y = 20;
         }
 
+        // QUESTION
         doc.setFontSize(12);
+        doc.setFont(undefined, "bold");
 
-        doc.setFont(
-          undefined,
-          "bold"
+        const questionText = `Q${index + 1}. ${q.question}`;
+
+        const splitQuestion = doc.splitTextToSize(
+          questionText,
+          180
         );
 
-        const questionText =
-          `Q${index + 1}. ${q.question}`;
+        doc.text(splitQuestion, 10, y);
 
-        const splitQuestion =
-          doc.splitTextToSize(
-            questionText,
-            180
-          );
+        y += splitQuestion.length * 6;
 
-        doc.text(
-          splitQuestion,
-          10,
-          y
-        );
+        // OPTIONS
+        if (q.options?.length > 0) {
 
-        y +=
-          splitQuestion.length *
-          6;
+          doc.setFont(undefined, "normal");
 
-        doc.setFont(
-          undefined,
-          "normal"
-        );
+          q.options.forEach((opt, i) => {
 
-        q.options.forEach(
-          (opt, i) => {
+            const label = String.fromCharCode(65 + i);
 
-            const label =
-              String.fromCharCode(
-                65 + i
-              );
+            const optionText = `${label}) ${opt}`;
 
-            const optionText =
-              `${label} )  ${opt}`;
-
-            const splitOption =
-              doc.splitTextToSize(
-                optionText,
-                170
-              );
-
-            doc.text(
-              splitOption,
-              15,
-              y
+            const splitOption = doc.splitTextToSize(
+              optionText,
+              170
             );
 
-            y +=
-              splitOption.length *
-              5;
+            doc.text(splitOption, 15, y);
+
+            y += splitOption.length * 5;
+          });
+        }
+
+        // ANSWERS
+        if (showAnswers) {
+
+          doc.setTextColor(0, 128, 0);
+          doc.setFont(undefined, "bold");
+
+          let answerText = "";
+
+          // MULTIPLE RESPONSE
+          if (Array.isArray(q.correct)) {
+
+            answerText = q.correct
+              .map((ans) => q.options?.[ans])
+              .join(", ");
+
+          } 
+          
+          // MCQ / TRUE FALSE
+          else if (q.options?.length > 0) {
+
+            answerText = q.options?.[q.correct];
           }
-        );
 
-        y += 8;
-      }
-    );
-    const safeTitle =
-      title
-        ?.replace(/[<>:"/\\|?*]+/g, "")
-        ?.replace(/\s+/g, "-")
-        ?.toLowerCase()
-        ?.slice(0, 40);
+          // SUBJECTIVE
+          else {
 
-    const finalFileName =
-      fileName ||
-      `${safeTitle || "question-paper"}.pdf`;
+            answerText = "Subjective Answer";
+          }
 
-    doc.save(finalFileName);
-  
-  };
+          doc.text(
+            `Answer: ${answerText}`,
+            15,
+            y
+          );
 
+          doc.setTextColor(0, 0, 0);
+          doc.setFont(undefined, "normal");
 
+          y += 8;
+        }
 
+        y += 10;
+      });
+
+      y += 5;
+    }
+  );
+
+  const safeTitle = title
+    ?.replace(/[<>:"/\\|?*]+/g, "")
+    ?.replace(/\s+/g, "-")
+    ?.toLowerCase()
+    ?.slice(0, 40);
+
+  const finalFileName =
+    fileName ||
+    `${safeTitle || "question-paper"}.pdf`;
+
+  doc.save(finalFileName);
+};

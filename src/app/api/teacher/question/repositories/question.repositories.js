@@ -2,9 +2,11 @@ import { prisma } from "@/lib/prisma";
 
 export const questionRepository = {
   getPromptByType: async (type) => {
-    return prisma.aIPrompt.findFirst({
+    return prisma.aIPrompt.findMany({
       where: {
-        type,
+        type:{
+          in:type,
+        },
         isActive: true,
       },
     });
